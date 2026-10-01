@@ -1,0 +1,23 @@
+# Abhängigkeiten und Build
+node_modules/
+dist/
+coverage/
+
+# Lokale und geheime Konfiguration
+.env.local
+.env.*.local
+.env.deploy
+.env.api
+.env.api.*
+!.env.api.example
+*.pem
+*.key
+
+# Editor / Betriebssystem
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.log
