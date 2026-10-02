@@ -69,3 +69,4 @@ Auf GitHub: **Use this template → Create a new repository**, oder:
 ```bash
 gh repo create <org>/<repo> --template <org>/m291-vue-template --private --clone
 ```
+# m291-template
