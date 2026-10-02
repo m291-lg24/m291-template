@@ -2,7 +2,6 @@
   "recommendations": [
     "Vue.volar",
     "bradlc.vscode-tailwindcss",
-    "EditorConfig.EditorConfig",
-    "bmewburn.vscode-intelephense-client"
+    "EditorConfig.EditorConfig"
   ]
 }

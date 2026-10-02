@@ -34,8 +34,6 @@ const cfg = {
   privateKey: process.env.DEPLOY_PRIVATE_KEY, // nur SFTP: Pfad zur Schlüsseldatei
   remoteDir: normalizeRemote(process.env.DEPLOY_REMOTE_DIR || '/httpdocs'),
   clean: process.env.DEPLOY_CLEAN !== 'false',
-  apiEnvLocal: process.env.DEPLOY_API_ENV || '', // z. B. .env.api.production
-  apiEnvRemote: normalizeRemote(process.env.DEPLOY_API_ENV_REMOTE || '/private/.env.api'),
   ftpsInsecure: process.env.DEPLOY_FTPS_INSECURE === 'true',
 }
 
@@ -45,7 +43,6 @@ for (const key of ['host', 'user']) {
 if (!cfg.password && !cfg.privateKey) fail('DEPLOY_PASSWORD (oder DEPLOY_PRIVATE_KEY für SFTP) ist nicht gesetzt.')
 if (!['sftp', 'ftps', 'ftp'].includes(cfg.protocol)) fail(`Unbekanntes DEPLOY_PROTOCOL "${cfg.protocol}" (sftp | ftps | ftp).`)
 if (['/', ''].includes(cfg.remoteDir)) fail('DEPLOY_REMOTE_DIR darf nicht die Wurzel "/" sein.')
-if (cfg.apiEnvLocal && !existsSync(cfg.apiEnvLocal)) fail(`DEPLOY_API_ENV verweist auf ${cfg.apiEnvLocal}, die Datei fehlt.`)
 
 // ---------- Ablauf ----------
 if (!CHECK && !existsSync(LOCAL_DIR)) fail(`${LOCAL_DIR}/ fehlt. Zuerst "npm run build" ausführen.`)
@@ -55,7 +52,6 @@ log(`Ziel: ${cfg.protocol}://${cfg.user}@${cfg.host}${cfg.port ? ':' + cfg.port 
 
 if (DRY_RUN) {
   files.forEach((f) => log(`  ${posix.join(cfg.remoteDir, f)}`))
-  if (cfg.apiEnvLocal) log(`  ${cfg.apiEnvLocal} → ${cfg.apiEnvRemote}`)
   log(`Testlauf: ${files.length} Dateien würden hochgeladen${cfg.clean ? ' (assets/ wird vorher geleert)' : ''}.`)
   process.exit(0)
 }
@@ -77,11 +73,6 @@ try {
     }
     log(`Lade ${files.length} Dateien hoch …`)
     await transport.uploadDir(LOCAL_DIR, cfg.remoteDir)
-
-    if (cfg.apiEnvLocal) {
-      log(`Lade API-Konfiguration nach ${cfg.apiEnvRemote} …`)
-      await transport.uploadFile(cfg.apiEnvLocal, cfg.apiEnvRemote)
-    }
     log(`Fertig in ${((Date.now() - started) / 1000).toFixed(1)} s.`)
   }
 } catch (err) {
@@ -116,10 +107,6 @@ async function ftpTransport() {
       await client.ensureDir(remote)
       await client.uploadFromDir(local)
     },
-    uploadFile: async (local, remote) => {
-      await client.ensureDir(posix.dirname(remote))
-      await client.uploadFrom(local, posix.basename(remote))
-    },
     close: async () => client.close(),
   }
 }
@@ -143,10 +130,6 @@ async function sftpTransport() {
       if (await client.exists(dir)) await client.rmdir(dir, true)
     },
     uploadDir: (local, remote) => client.uploadDir(local, remote),
-    uploadFile: async (local, remote) => {
-      await client.mkdir(posix.dirname(remote), true)
-      await client.put(local, remote)
-    },
     close: async () => {
       try {
         await client.end()

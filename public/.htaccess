@@ -7,23 +7,14 @@ Options -Indexes
   # Bei Installation in einem Unterordner anpassen, z. B. RewriteBase /app/
   RewriteBase /
 
-  # API: alles unter api/ an den Single Entry Point
-  RewriteRule ^api/?$ api/index.php [L,QSA]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule ^api/(.*)$ api/index.php [L,QSA]
-
   # SPA-Fallback: unbekannte Pfade an index.html (Vue Router übernimmt)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
 </IfModule>
 
-# Versteckte Dateien (.env*, .git …) sperren
+# Versteckte Dateien (.htaccess, .env …) sperren
 <FilesMatch "^\.">
-  Require all denied
-</FilesMatch>
-# PHP-Hilfsdateien nicht direkt aufrufbar
-<FilesMatch "^(config|lib)\.php$">
   Require all denied
 </FilesMatch>
 
@@ -35,8 +26,4 @@ Options -Indexes
   <FilesMatch "index\.html$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
-</IfModule>
-
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
 </IfModule>

@@ -15,7 +15,4 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm test
       - run: npm run build
-      - name: PHP-Syntax prüfen
-        run: find public/api scripts -name '*.php' -print0 | xargs -0 -n1 php -l

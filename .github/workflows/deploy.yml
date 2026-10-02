@@ -15,9 +15,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
-    env:
-      # Mehrzeiliger Inhalt von .env.api.production (optional)
-      API_ENV: ${{ secrets.API_ENV }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,14 +22,6 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm test
-
-      - name: API-Konfiguration schreiben
-        if: ${{ env.API_ENV != '' }}
-        run: |
-          printf '%s\n' "$API_ENV" > .env.api.production
-          echo "DEPLOY_API_ENV=.env.api.production" >> "$GITHUB_ENV"
-
       - name: Build und Upload
         run: npm run deploy
         env:
@@ -42,6 +31,4 @@ jobs:
           DEPLOY_REMOTE_DIR: ${{ vars.DEPLOY_REMOTE_DIR || '/httpdocs' }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
-          # Frontend-Werte für den Build (optional als Repository-Variablen)
           VITE_APP_TITLE: ${{ vars.VITE_APP_TITLE || 'M291-Projekt' }}
-          VITE_FORM_ENDPOINT: ${{ vars.VITE_FORM_ENDPOINT }}

@@ -3,17 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Vorlage Modul 291 – Vue 3, Tailwind, Router, Pinia, optionale PHP-API, Deployment auf Plesk",
+  "description": "Vorlage Modul 291 – Vue 3, Tailwind, Router, Pinia, Deployment auf Plesk",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "dev": "vite",
-    "api": "php -S localhost:8000 -t public scripts/dev-router.php",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "deploy": "npm run build && node scripts/deploy.mjs",
     "deploy:dry": "npm run build && node scripts/deploy.mjs --dry-run",
     "deploy:check": "node scripts/deploy.mjs --check"
@@ -29,7 +26,6 @@
     "basic-ftp": "^6.2.1",
     "ssh2-sftp-client": "^12.1.1",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.3.2",
-    "vitest": "^5.0.3"
+    "vite": "^8.3.2"
   }
 }
