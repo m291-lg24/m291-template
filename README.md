@@ -67,6 +67,5 @@ Details und Fehlersuche: [docs/plesk.md](docs/plesk.md).
 Auf GitHub: **Use this template → Create a new repository**, oder:
 
 ```bash
-gh repo create <org>/<repo> --template <org>/m291-vue-template --private --clone
+gh repo create <org>/<repo> --template m291-lg24/m291-template --private --clone
 ```
-# m291-template
