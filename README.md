@@ -20,7 +20,8 @@ npm run dev        # http://localhost:5173
 | `npm run preview` | Build lokal ansehen |
 | `npm run deploy:check` | Verbindung zum Server testen |
 | `npm run deploy:dry` | Build + Liste der Dateien, die hochgeladen würden |
-| `npm run deploy` | Build + Upload auf Plesk |
+| `npm run deploy` | Build + Upload auf Plesk (inkl. `api/`, falls vorhanden) |
+| `npm run deploy:api` | nur `api/` hochladen (ohne Build) |
 
 ## Struktur
 

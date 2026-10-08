@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "deploy": "npm run build && node scripts/deploy.mjs",
     "deploy:dry": "npm run build && node scripts/deploy.mjs --dry-run",
-    "deploy:check": "node scripts/deploy.mjs --check"
+    "deploy:check": "node scripts/deploy.mjs --check",
+    "deploy:api": "node scripts/deploy.mjs --api-only"
   },
   "dependencies": {
     "pinia": "^4.0.3",

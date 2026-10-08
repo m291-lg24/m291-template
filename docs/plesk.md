@@ -28,6 +28,18 @@ npm run deploy
 
 Das Skript baut die App (`dist/`), leert auf dem Server den Ordner `assets/` und lädt alle Dateien hoch. Dateien ausserhalb von `assets/` bleiben auf dem Server erhalten.
 
+### PHP-Backend (`api/`)
+
+Existiert im Projekt ein Ordner `api/`, lädt `npm run deploy` ihn nach `<DEPLOY_REMOTE_DIR>/api` (erreichbar unter `https://<domain>/api/…`).
+
+- Nur das Backend hochladen (ohne Build): `npm run deploy:api`
+- Backend auslassen: `DEPLOY_API=false` oder `node scripts/deploy.mjs --no-api`
+- Anderer Zielordner: `DEPLOY_API_DIR=/pfad/zu/api`
+- `api/` wird auf dem Server **nie geleert**. Gelöschte PHP-Dateien im Plesk-Dateimanager entfernen.
+- **Nicht** hochgeladen werden: versteckte Dateien (`.env`, `.git` …, ausser `.htaccess`), `*.local.*` (z. B. `config.local.php`), Vorlagen (`*.example`, `*.sample`, `*.dist`), `*.sql`, `*.sqlite`, `*.db`, `*.log`, `*.md`, `node_modules/`, `test/`, `tests/`.
+- Datenbank-Zugangsdaten gehören in `api/config.local.php` (nicht committen) und werden einmalig im Plesk-Dateimanager angelegt.
+- `npm run deploy:dry` zeigt, welche API-Dateien hochgeladen bzw. ausgelassen werden.
+
 ### Fehlersuche
 
 | Meldung / Symptom | Ursache und Lösung |
@@ -52,7 +64,7 @@ Das Skript baut die App (`dist/`), leert auf dem Server den Ordner `assets/` und
 - Pro Gruppe eine Domain oder Subdomain mit eigenem FTP-Benutzer.
 - SSL/TLS mit Let's Encrypt, Weiterleitung HTTP → HTTPS aktiv.
 - Dokumentstamm notieren (`httpdocs` oder Subdomain-Ordner) → Wert für `DEPLOY_REMOTE_DIR`.
-- PHP wird nicht benötigt (statische Auslieferung).
+- PHP nur nötig, wenn das Projekt einen Ordner `api/` enthält (PHP 8.x, MariaDB-Datenbank pro Gruppe).
 
 ### B.2 Zugänge
 
@@ -67,6 +79,9 @@ Mit nginx als Proxy vor Apache (Plesk-Standard) wirkt `public/.htaccess` ohne we
 ```nginx
 location ~ /\.(?!well-known) {
     deny all;
+}
+location /api/ {
+    try_files $uri $uri/ /api/index.php?$query_string;
 }
 location / {
     try_files $uri $uri/ /index.html;

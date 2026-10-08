@@ -7,6 +7,9 @@ Options -Indexes
   # Bei Installation in einem Unterordner anpassen, z. B. RewriteBase /app/
   RewriteBase /
 
+  # api/ nie an die SPA weiterreichen (PHP-Backend, eigene .htaccess möglich)
+  RewriteRule ^api(/|$) - [L]
+
   # SPA-Fallback: unbekannte Pfade an index.html (Vue Router übernimmt)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
